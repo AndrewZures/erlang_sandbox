@@ -1,6 +1,19 @@
 -module(quicksort).
--export([quicksort/1, lc_quicksort/1]).
+-export([quicksort/1]).
 
+quicksort([]) -> [];
+quicksort([Pivot|Rest]) ->
+  {Smaller, Larger} = partition(Pivot, Rest, [], []),
+  quicksort(Smaller) ++ [Pivot] ++ quicksort(Larger).
+
+partition(_, [], Smaller, Larger) -> {Smaller, Larger};
+partition(Pivot, [H|T], Smaller, Larger) ->
+  if H =< Pivot -> partition(Pivot, T, [H | Smaller], Larger);
+     H >  Pivot -> partition(Pivot, T, Smaller, [H | Larger])
+  end.
+
+%% QUICKSORT WALK THRU
+%%
 %% [3,2,4,1]
 %% qucksort[3,[2,4,1]
 %%  --> partition(3, [2 | [4,1]], [], [])   : 2 =< 3
@@ -28,21 +41,4 @@
 %%<------
 %%result [1,2,3,4]
 
-quicksort([]) -> [];
-quicksort([Pivot|Rest]) ->
-  {Smaller, Larger} = partition(Pivot,Rest,[],[]),
-    quicksort(Smaller) ++ [Pivot] ++ quicksort(Larger).
-
-partition(_,[], Smaller, Larger) -> {Smaller, Larger};
-partition(Pivot, [H|T], Smaller, Larger) ->
-  if H =< Pivot -> partition(Pivot, T, [H | Smaller], Larger);
-     H >  Pivot -> partition(Pivot, T, Smaller, [H, Larger])
-  end.
-
-%% list comprehension version
-lc_quicksort([]) -> [];
-lc_quicksort([Pivot|Rest]) ->
-  lc_quicksort([Smaller || Smaller <- Rest, Smaller =< Pivot])
-  ++ [Pivot] ++
-  lc_quicksort([Larger || Larger <- Rest, Larger > Pivot]).
 
